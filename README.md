@@ -98,11 +98,11 @@ ddev exec vendor/bin/phpunit -c web/core web/modules/custom
 
 - [x] **M1 — Scaffold**: Drupal 11 + DDEV, contrib deps, dev tooling, PHPCS, repo hygiene.
 - [x] **M2 — Content model** (`newsline_core`): Article type, fields, Media, image styles, taxonomy, and pathauto pattern shipped as installable `config/install`.
-- [ ] **Deployment pipeline**: Oracle (Drupal) + Vercel (frontend), prod settings, CI/CD. _(Ordering TBD with client.)_
-- [ ] **Custom REST Resource + shaping service + tests** (`newsline_api`).
-- [ ] **OAuth2 auth** (`simple_oauth`).
-- [ ] **Next.js frontend + design system + ISR**.
-- [ ] **On-demand revalidation + docs finalize**.
+- [ ] **M3 — Custom REST Resource + shaping service + tests** (`newsline_api`).
+- [ ] **M4 — OAuth2 auth** (`simple_oauth`).
+- [ ] **M5 — Next.js frontend + design system + ISR**.
+- [ ] **M6 — On-demand revalidation**.
+- [ ] **M7 — Deployment**: Oracle (Docker on Compute VM) + Vercel, full config sync, GitHub Actions CI/CD. _(Last — deploys the complete stack.)_
 
 ## Skills demonstrated
 
