@@ -1,0 +1,13 @@
+name: 'News Line API'
+type: module
+description: 'Exposes the Article Feed as a custom, frontend-shaped REST resource.'
+package: 'News Line'
+core_version_requirement: ^11
+dependencies:
+  - drupal:rest
+  - drupal:serialization
+  - drupal:node
+  - drupal:taxonomy
+  - drupal:media
+  - drupal:image
+  - newsline_core:newsline_core

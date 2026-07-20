@@ -1,0 +1,19 @@
+newsline_api.settings:
+  type: config_object
+  label: 'News Line API settings'
+  mapping:
+    items_per_page_default:
+      type: integer
+      label: 'Default number of articles returned per page'
+    items_per_page_max:
+      type: integer
+      label: 'Maximum number of articles a client may request per page'
+    reading_words_per_minute:
+      type: integer
+      label: 'Average reading speed used to estimate reading time'
+    hero_image_style:
+      type: string
+      label: 'Machine name of the image style used for the hero image'
+    thumbnail_image_style:
+      type: string
+      label: 'Machine name of the image style used for the thumbnail image'

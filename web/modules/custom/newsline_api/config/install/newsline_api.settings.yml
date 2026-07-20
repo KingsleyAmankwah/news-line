@@ -1,0 +1,5 @@
+items_per_page_default: 10
+items_per_page_max: 50
+reading_words_per_minute: 200
+hero_image_style: feed_hero
+thumbnail_image_style: feed_thumbnail

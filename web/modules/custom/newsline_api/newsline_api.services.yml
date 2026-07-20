@@ -1,0 +1,25 @@
+services:
+  # Dedicated logger channel so API failures are traceable in isolation.
+  logger.channel.newsline_api:
+    parent: logger.channel_base
+    arguments:
+      - 'newsline_api'
+
+  newsline_api.reading_time_calculator:
+    class: Drupal\newsline_api\ReadingTimeCalculator
+
+  newsline_api.slugifier:
+    class: Drupal\newsline_api\Slugifier
+    arguments:
+      - '@transliteration'
+
+  newsline_api.article_feed_normalizer:
+    class: Drupal\newsline_api\ArticleFeedNormalizer
+    arguments:
+      - '@entity_type.manager'
+      - '@date.formatter'
+      - '@file_url_generator'
+      - '@newsline_api.slugifier'
+      - '@newsline_api.reading_time_calculator'
+      - '@config.factory'
+      - '@logger.channel.newsline_api'
