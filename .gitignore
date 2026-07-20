@@ -1,0 +1,58 @@
+# =============================================================================
+# Drupal (Composer-managed project)
+# -----------------------------------------------------------------------------
+# Core, contrib, and vendor code is NOT committed. It is reconstructed from
+# composer.json / composer.lock via `composer install`. This keeps the repo
+# focused on the code we actually authored and demonstrates dependency
+# management via Composer rather than vendoring third-party code.
+# =============================================================================
+/vendor/
+/web/core/
+/web/modules/contrib/
+/web/themes/contrib/
+/web/profiles/contrib/
+/web/libraries/
+/drush/Commands/contrib/
+
+# -----------------------------------------------------------------------------
+# Environment-specific and sensitive settings.
+# default.settings.php / default.services.yml are kept as templates.
+# -----------------------------------------------------------------------------
+/web/sites/*/settings.php
+/web/sites/*/settings.local.php
+/web/sites/*/settings.ddev.php
+/web/sites/*/services.yml
+!/web/sites/default/default.settings.php
+!/web/sites/default/default.services.yml
+
+# -----------------------------------------------------------------------------
+# User-generated content and test scaffolding.
+# -----------------------------------------------------------------------------
+/web/sites/*/files/
+/web/sites/*/private/
+/web/sites/simpletest/
+
+# -----------------------------------------------------------------------------
+# OAuth2 key material (simple_oauth). Private keys must never be committed;
+# they are generated per-environment. See README for the generation step.
+# -----------------------------------------------------------------------------
+*.key
+/keys/
+
+# =============================================================================
+# Next.js frontend
+# =============================================================================
+/frontend/node_modules/
+/frontend/.next/
+/frontend/out/
+/frontend/build/
+/frontend/.env*
+!/frontend/.env.example
+
+# =============================================================================
+# Tooling / editors / OS
+# =============================================================================
+/.idea/
+/.vscode/
+.DS_Store
+Thumbs.db

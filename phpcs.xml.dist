@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="news-line">
+  <description>
+    Coding standards for News Line custom code. Enforces the Drupal and
+    DrupalPractice rulesets shipped by drupal/coder. Only custom code is
+    scanned — core and contrib are Composer-managed and excluded.
+  </description>
+
+  <!-- Scan only the code we author. -->
+  <file>web/modules/custom</file>
+  <file>web/themes/custom</file>
+
+  <!-- File extensions PHPCS should inspect. -->
+  <arg name="extensions" value="php,module,inc,install,test,profile,theme,css,info.yml,yml,twig"/>
+
+  <!-- Show sniff codes and progress; use colour. -->
+  <arg value="sp"/>
+  <arg name="colors"/>
+
+  <!-- Run in parallel where supported. -->
+  <arg name="parallel" value="4"/>
+
+  <rule ref="Drupal"/>
+  <rule ref="DrupalPractice"/>
+</ruleset>
