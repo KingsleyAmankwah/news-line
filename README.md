@@ -90,15 +90,18 @@ Frontend setup instructions are added in the frontend milestone.
 # PHP CodeSniffer (Drupal + DrupalPractice rulesets).
 ddev exec vendor/bin/phpcs
 
+# PHPStan static analysis (level 5) of custom code.
+ddev exec vendor/bin/phpstan analyse -c phpstan.neon.dist
+
 # PHPUnit (Unit + Kernel tests for custom code).
-ddev exec vendor/bin/phpunit -c web/core web/modules/custom
+ddev exec 'SIMPLETEST_DB="mysql://db:db@db/db" vendor/bin/phpunit -c web/core web/modules/custom'
 ```
 
 ## Milestones
 
 - [x] **M1 — Scaffold**: Drupal 11 + DDEV, contrib deps, dev tooling, PHPCS, repo hygiene.
 - [x] **M2 — Content model** (`newsline_core`): Article type, fields, Media, image styles, taxonomy, and pathauto pattern shipped as installable `config/install`.
-- [ ] **M3 — Custom REST Resource + shaping service + tests** (`newsline_api`).
+- [x] **M3 — Custom REST Resource + shaping service + tests** (`newsline_api`): `ArticleFeedResource` (ResourceInterface) serving a flattened, cache-aware feed via a testable normalizer; PHPUnit unit + kernel coverage; PHPStan level 5.
 - [ ] **M4 — OAuth2 auth** (`simple_oauth`).
 - [ ] **M5 — Next.js frontend + design system + ISR**.
 - [ ] **M6 — On-demand revalidation**.
