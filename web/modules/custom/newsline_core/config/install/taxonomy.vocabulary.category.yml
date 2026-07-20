@@ -1,0 +1,11 @@
+langcode: en
+status: true
+dependencies:
+  enforced:
+    module:
+      - newsline_core
+name: Category
+vid: category
+description: 'Primary editorial category for an article (single value).'
+weight: 0
+new_revision: false

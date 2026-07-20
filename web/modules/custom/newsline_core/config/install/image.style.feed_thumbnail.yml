@@ -1,0 +1,17 @@
+langcode: en
+status: true
+dependencies:
+  enforced:
+    module:
+      - newsline_core
+name: feed_thumbnail
+label: 'Feed Thumbnail'
+effects:
+  ead8dd06-c56d-46e1-80db-95fb363b6900:
+    uuid: ead8dd06-c56d-46e1-80db-95fb363b6900
+    id: image_scale_and_crop
+    weight: 1
+    data:
+      width: 400
+      height: 225
+      anchor: center-center

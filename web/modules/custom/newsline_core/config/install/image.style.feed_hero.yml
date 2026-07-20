@@ -1,0 +1,17 @@
+langcode: en
+status: true
+dependencies:
+  enforced:
+    module:
+      - newsline_core
+name: feed_hero
+label: 'Feed Hero'
+effects:
+  d1afd04c-351c-4bc3-a513-49f25192551a:
+    uuid: d1afd04c-351c-4bc3-a513-49f25192551a
+    id: image_scale_and_crop
+    weight: 1
+    data:
+      width: 1200
+      height: 675
+      anchor: center-center

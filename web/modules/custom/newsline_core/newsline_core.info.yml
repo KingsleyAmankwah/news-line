@@ -1,0 +1,16 @@
+name: 'News Line Core'
+type: module
+description: 'Defines the Article content model (content type, fields, media, taxonomy, image styles, and URL aliases) as installable configuration.'
+package: 'News Line'
+core_version_requirement: ^11
+dependencies:
+  - drupal:node
+  - drupal:taxonomy
+  - drupal:media
+  - drupal:media_library
+  - drupal:image
+  - drupal:text
+  - drupal:options
+  - drupal:field
+  - drupal:path
+  - pathauto:pathauto

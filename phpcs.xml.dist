@@ -13,6 +13,11 @@
   <!-- File extensions PHPCS should inspect. -->
   <arg name="extensions" value="php,module,inc,install,test,profile,theme,css,info.yml,yml,twig"/>
 
+  <!-- Machine-generated configuration is not hand-authored, so it is not
+       subject to coding-standards review. -->
+  <exclude-pattern>*/config/install/*</exclude-pattern>
+  <exclude-pattern>*/config/optional/*</exclude-pattern>
+
   <!-- Show sniff codes and progress; use colour. -->
   <arg value="sp"/>
   <arg name="colors"/>

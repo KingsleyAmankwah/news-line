@@ -1,0 +1,11 @@
+langcode: en
+status: true
+dependencies:
+  enforced:
+    module:
+      - newsline_core
+name: Tags
+vid: tags
+description: 'Free-form topic tags for an article.'
+weight: 0
+new_revision: false
