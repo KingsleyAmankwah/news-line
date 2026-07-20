@@ -1,0 +1,9 @@
+parameters:
+  level: 5
+  paths:
+    - web/modules/custom
+  # Drupal's method PHPDocs are frequently looser than runtime reality
+  # (e.g. NodeInterface::getOwner() can return null when the author is
+  # deleted), so defensive instanceof/null checks must not be flagged as
+  # "always true/false".
+  treatPhpDocTypesAsCertain: false
