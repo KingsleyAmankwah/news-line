@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  enforced:
+    module:
+      - newsline_api
+id: article_feed_read
+name: 'article_feed:read'
+description: 'Read access to the public article feed.'
+grant_types:
+  client_credentials:
+    status: true
+    description: 'Read the article feed.'
+umbrella: false
+parent: null
+granularity_id: permission
+granularity_configuration:
+  permission: 'restful get article_feed'

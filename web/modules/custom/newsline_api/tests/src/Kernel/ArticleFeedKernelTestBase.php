@@ -42,6 +42,8 @@ abstract class ArticleFeedKernelTestBase extends KernelTestBase {
     'pathauto',
     'serialization',
     'rest',
+    'consumers',
+    'simple_oauth',
     'newsline_core',
     'newsline_api',
   ];
@@ -69,6 +71,7 @@ abstract class ArticleFeedKernelTestBase extends KernelTestBase {
       'image',
       'media',
       'pathauto',
+      'simple_oauth',
       'newsline_core',
       'newsline_api',
     ]);

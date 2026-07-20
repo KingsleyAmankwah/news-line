@@ -4,7 +4,7 @@ dependencies:
   module:
     - newsline_api
     - serialization
-    - user
+    - simple_oauth
   enforced:
     module:
       - newsline_api
@@ -17,4 +17,4 @@ configuration:
   formats:
     - json
   authentication:
-    - cookie
+    - oauth2

@@ -10,4 +10,5 @@ dependencies:
   - drupal:taxonomy
   - drupal:media
   - drupal:image
+  - simple_oauth:simple_oauth
   - newsline_core:newsline_core
