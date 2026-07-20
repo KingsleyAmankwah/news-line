@@ -75,14 +75,68 @@ ddev composer install
 # 2. Install the site (or import an existing DB).
 ddev drush site:install --yes
 
-# 3. (Auth milestone) Generate the OAuth2 key pair — never commit these.
-#    Detailed steps are added in the Auth milestone.
+# 3. Enable the custom modules (imports the content model + API config).
+ddev drush en newsline_core newsline_api -y
 
-# 4. Open the site.
+# 4. Set up OAuth2 (see "Authentication" below for the full flow).
+ddev drush so:generate-keys /var/www/html/keys
+ddev drush cset simple_oauth.settings public_key /var/www/html/keys/public.key -y
+ddev drush cset simple_oauth.settings private_key /var/www/html/keys/private.key -y
+ddev drush cset simple_oauth.settings scope_provider dynamic -y
+
+# 5. Open the site.
 ddev launch
 ```
 
+> Note: this machine's DDEV runs on mapped ports (XAMPP owns 80/443), so the
+> local site is at `http://news-line.ddev.site:33000`.
+
 Frontend setup instructions are added in the frontend milestone.
+
+## Authentication (OAuth2)
+
+The feed is protected with `simple_oauth` using the **client-credentials**
+grant — the right fit for machine-to-machine access, since the Next.js server
+(not the browser) fetches the feed during ISR.
+
+Configuration that ships in the repo (module `config/install`):
+
+- `rest.resource.article_feed` — the endpoint, authenticated via `oauth2`.
+- `simple_oauth.oauth2_scope.article_feed_read` — an OAuth2 scope named
+  `article_feed:read` that grants the `restful get article_feed` permission.
+
+Per-environment setup (secrets/keys, **never committed**):
+
+1. Generate the key pair and point `simple_oauth` at it (step 4 above). Keys
+   live outside the docroot in `keys/` and are gitignored.
+2. Create a confidential Consumer for the frontend and assign it a dedicated
+   service user plus the scope:
+
+   ```bash
+   # Create a low-privilege service account the token acts as.
+   ddev drush user:create newsline_service
+
+   # Create the client via the UI at /admin/config/services/consumer/add,
+   # or with drush; set grant type = Client Credentials, scope =
+   # "article_feed:read", User = newsline_service, and record the secret.
+   ```
+
+Token flow the frontend uses:
+
+```bash
+# 1. Exchange client credentials for an access token.
+curl -X POST http://news-line.ddev.site:33000/oauth/token \
+  -d grant_type=client_credentials \
+  -d client_id=<client-id> \
+  -d client_secret=<secret> \
+  -d scope=article_feed:read
+
+# 2. Call the feed with the bearer token.
+curl -H 'Authorization: Bearer <access-token>' \
+  'http://news-line.ddev.site:33000/api/article-feed?_format=json'
+```
+
+Without a valid token the endpoint returns `403`.
 
 ## Coding standards & tests
 
@@ -102,7 +156,7 @@ ddev exec 'SIMPLETEST_DB="mysql://db:db@db/db" vendor/bin/phpunit -c web/core we
 - [x] **M1 — Scaffold**: Drupal 11 + DDEV, contrib deps, dev tooling, PHPCS, repo hygiene.
 - [x] **M2 — Content model** (`newsline_core`): Article type, fields, Media, image styles, taxonomy, and pathauto pattern shipped as installable `config/install`.
 - [x] **M3 — Custom REST Resource + shaping service + tests** (`newsline_api`): `ArticleFeedResource` (ResourceInterface) serving a flattened, cache-aware feed via a testable normalizer; PHPUnit unit + kernel coverage; PHPStan level 5.
-- [ ] **M4 — OAuth2 auth** (`simple_oauth`).
+- [x] **M4 — OAuth2 auth** (`simple_oauth`): feed protected via client-credentials grant; scope maps to the feed permission; keys/consumer/settings are per-environment.
 - [ ] **M5 — Next.js frontend + design system + ISR**.
 - [ ] **M6 — On-demand revalidation**.
 - [ ] **M7 — Deployment**: Oracle (Docker on Compute VM) + Vercel, full config sync, GitHub Actions CI/CD. _(Last — deploys the complete stack.)_
