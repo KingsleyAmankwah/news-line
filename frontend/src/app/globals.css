@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens. Raw values live on :root (and switch for dark mode); the
+ * @theme block below exposes them to Tailwind as semantic utilities such as
+ * bg-surface, text-muted, border-border and rounded-card.
+ */
+:root {
+  --nl-background: #f7f8fa;
+  --nl-surface: #ffffff;
+  --nl-foreground: #14181f;
+  --nl-muted: #58616f;
+  --nl-border: #e4e7ec;
+  --nl-brand: #1d4ed8;
+  --nl-brand-foreground: #ffffff;
+  --nl-accent: #eef2ff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --nl-background: #0a0c10;
+    --nl-surface: #14171d;
+    --nl-foreground: #e8eaed;
+    --nl-muted: #98a2b3;
+    --nl-border: #262b33;
+    --nl-brand: #60a5fa;
+    --nl-brand-foreground: #0a0c10;
+    --nl-accent: #1a2233;
+  }
+}
+
+@theme inline {
+  --color-background: var(--nl-background);
+  --color-surface: var(--nl-surface);
+  --color-foreground: var(--nl-foreground);
+  --color-muted: var(--nl-muted);
+  --color-border: var(--nl-border);
+  --color-brand: var(--nl-brand);
+  --color-brand-foreground: var(--nl-brand-foreground);
+  --color-accent: var(--nl-accent);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  --radius-card: 0.875rem;
+}
+
+body {
+  background-color: var(--nl-background);
+  color: var(--nl-foreground);
+}
