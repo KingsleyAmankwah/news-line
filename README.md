@@ -91,7 +91,25 @@ ddev launch
 > Note: this machine's DDEV runs on mapped ports (XAMPP owns 80/443), so the
 > local site is at `http://news-line.ddev.site:33000`.
 
-Frontend setup instructions are added in the frontend milestone.
+## Frontend (Next.js)
+
+The frontend lives in `frontend/` and runs on the host (Node 20+), separate
+from the DDEV backend stack:
+
+```bash
+cd frontend
+cp .env.example .env.local     # set OAUTH_CLIENT_ID / OAUTH_CLIENT_SECRET
+npm install
+npm run dev                    # http://localhost:3000
+```
+
+It acquires an OAuth token and fetches the feed **server-side** (credentials
+never reach the browser), renders the article grid with **ISR**, and shows an
+unavailable state if the backend is down. Other scripts:
+
+- `npm run test` — Vitest (defensive feed-parser unit tests)
+- `npm run lint` — ESLint
+- `npm run build` — production build
 
 ## Authentication (OAuth2)
 
@@ -157,7 +175,7 @@ ddev exec 'SIMPLETEST_DB="mysql://db:db@db/db" vendor/bin/phpunit -c web/core we
 - [x] **M2 — Content model** (`newsline_core`): Article type, fields, Media, image styles, taxonomy, and pathauto pattern shipped as installable `config/install`.
 - [x] **M3 — Custom REST Resource + shaping service + tests** (`newsline_api`): `ArticleFeedResource` (ResourceInterface) serving a flattened, cache-aware feed via a testable normalizer; PHPUnit unit + kernel coverage; PHPStan level 5.
 - [x] **M4 — OAuth2 auth** (`simple_oauth`): feed protected via client-credentials grant; scope maps to the feed permission; keys/consumer/settings are per-environment.
-- [ ] **M5 — Next.js frontend + design system + ISR**.
+- [x] **M5 — Next.js frontend + design system + ISR**: Tailwind design-token system; `Button`/`Card`/`Layout`; server-side OAuth token caching; defensive feed parsing (Vitest); statically-generated feed page with ISR.
 - [ ] **M6 — On-demand revalidation**.
 - [ ] **M7 — Deployment**: Oracle (Docker on Compute VM) + Vercel, full config sync, GitHub Actions CI/CD. _(Last — deploys the complete stack.)_
 
