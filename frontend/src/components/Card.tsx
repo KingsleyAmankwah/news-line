@@ -38,7 +38,7 @@ export function Card({ article }: { article: Article }) {
         <h2 className="text-lg font-semibold leading-snug text-foreground">
           <Link
             href={article.path || "#"}
-            className="after:absolute after:inset-0 focus-visible:outline-none"
+            className="after:absolute after:inset-0 after:content-[''] focus-visible:outline-none"
           >
             {article.title}
           </Link>
