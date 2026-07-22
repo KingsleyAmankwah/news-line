@@ -205,10 +205,13 @@ defensive feed parser.
 - [x] **Design system** in Tailwind + a **Figma** system generated from code
 - [x] **Jest + RTL** component tests
 - [x] **On-demand revalidation** webhook
-- [ ] **Demo deploy** — Vercel (frontend) + Oracle Cloud VM / DDEV host (backend)
+- [x] **Demo deploy** — frontend on **Vercel**, backend served from local DDEV
+      through a tunnel (`ddev share`). See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
-> Deployment intentionally targets the fastest reliable demo link (Vercel +
-> Oracle/DDEV) rather than a bespoke AWS pipeline.
+> **Live demo:** the frontend is deployed on Vercel; because the backend is
+> tunneled from a local DDEV instance, the site shows live content and images
+> only while the tunnel is running. `docs/DEPLOYMENT.md` also documents a
+> persistent, self-hosted path (Docker Compose on a VM) for an always-on deploy.
 
 ## Skills demonstrated
 

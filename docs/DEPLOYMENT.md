@@ -1,4 +1,62 @@
-# Deployment — Drupal backend on an Oracle Cloud VM
+# Deployment
+
+The frontend is always deployed to **Vercel**. The backend has two documented
+paths:
+
+- **A — Quick demo (no server, no card):** run the local DDEV backend through a
+  public tunnel (`ddev share`). Zero hosting cost; live only while the tunnel is
+  up. This is what the current demo uses.
+- **B — Persistent deploy (always-on):** a Docker Compose stack on a VM (Oracle
+  Cloud Always-Free shape). Survives your laptop being off.
+
+Pick A to show the project quickly; move to B when you want a URL that stays up.
+
+---
+
+## Path A — Quick demo: Vercel frontend + `ddev share` backend
+
+The backend stays on your machine in DDEV; `ddev share` exposes it over an
+ngrok HTTPS URL that Vercel calls server-side.
+
+### 1. Start the tunnel
+
+```bash
+ddev share          # prints an https://<name>.ngrok-free.dev URL
+```
+
+> One ngrok tunnel per free account at a time. The URL changes each run unless
+> you configure a reserved domain in your ngrok account. Keep this terminal open
+> — closing it takes the demo backend offline.
+
+### 2. Configure the Vercel project (Environment Variables)
+
+- `DRUPAL_BASE_URL=https://<name>.ngrok-free.dev` — **no port, no trailing
+  slash.** The frontend rewrites every backend/image URL onto exactly this
+  origin (see `frontend/src/lib/backend-url.ts`); a stray port here is the one
+  thing that breaks images.
+- `OAUTH_CLIENT_ID`, `OAUTH_CLIENT_SECRET`,
+  `OAUTH_SCOPE=article_feed:read article:read`
+- `REVALIDATE_SECRET` — must match the backend's `settings.php` value for
+  instant publish updates; time-based ISR (~60s) works regardless.
+
+### 3. Deploy
+
+`git push` (or Vercel **Deployments → Redeploy with _"Use existing build
+cache" OFF_**). Env-var changes only take effect on a **fresh** build — a cached
+redeploy keeps the old values baked in. The tunnel must be up **during the
+build** too, or the feed prerenders empty (it self-heals on the next
+revalidation once the backend is reachable).
+
+### Caveats
+
+- The site shows live content/images **only while `ddev share` is running**.
+- Because the backend is unreachable at build time when the tunnel is down, the
+  feed degrades to empty rather than failing the build (`getArticleFeed` catch),
+  and refetches on the next ISR revalidation.
+
+---
+
+## Path B — Persistent deploy: Drupal backend on an Oracle Cloud VM
 
 The backend runs as a Docker Compose stack: **Caddy** (auto-HTTPS) → **PHP-FPM**
 (the Drupal app) → **MariaDB**. Deploy = `git pull` + `docker compose up`.
