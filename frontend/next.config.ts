@@ -9,6 +9,11 @@ const drupalUrl = new URL(
 
 const nextConfig: NextConfig = {
   images: {
+    // Next 16 blocks the image optimizer from fetching hosts that resolve to a
+    // private IP (SSRF protection). In development the DDEV backend resolves to
+    // 127.0.0.1, so allow local IPs there only; production images come from the
+    // public backend host and must stay guarded.
+    dangerouslyAllowLocalIP: process.env.NODE_ENV !== "production",
     remotePatterns: [
       {
         protocol: drupalUrl.protocol.replace(":", "") as "http" | "https",
