@@ -2,6 +2,7 @@ import "server-only";
 
 import { unstable_cache } from "next/cache";
 import { getAccessToken } from "@/lib/auth";
+import { toBackendUrl } from "@/lib/backend-url";
 import { normalizeArticleDetail, normalizeFeedResponse } from "@/lib/parse-feed";
 import type { ArticleDetail, FeedQuery, FeedResponse, HeroImage } from "@/lib/types";
 
@@ -28,40 +29,17 @@ function revalidateSeconds(): number {
   return Number.isFinite(parsed) && parsed > 0 ? parsed : 60;
 }
 
-/**
- * Forces an image URL onto the configured backend origin.
- *
- * Drupal emits image-style URLs whose host reflects however the request
- * reached it (behind DDEV/a proxy that can be "localhost"), which is
- * unreliable for a decoupled client. The frontend owns the public backend
- * location, so it rewrites the origin — resolving relative paths and
- * overriding any absolute host — keeping the path and the required itok query.
- */
-function toBackendUrl(rawUrl: string | null): string | null {
-  if (!rawUrl) {
-    return rawUrl;
-  }
-  try {
-    const base = new URL(drupalBaseUrl());
-    const resolved = new URL(rawUrl, base);
-    resolved.protocol = base.protocol;
-    resolved.host = base.host;
-    return resolved.toString();
-  } catch {
-    return rawUrl;
-  }
-}
-
 function withBackendHero<T extends { hero: HeroImage | null }>(article: T): T {
   if (!article.hero) {
     return article;
   }
+  const base = drupalBaseUrl();
   return {
     ...article,
     hero: {
       ...article.hero,
-      src: toBackendUrl(article.hero.src) ?? article.hero.src,
-      thumbnail: toBackendUrl(article.hero.thumbnail),
+      src: toBackendUrl(article.hero.src, base) ?? article.hero.src,
+      thumbnail: toBackendUrl(article.hero.thumbnail, base),
     },
   };
 }
