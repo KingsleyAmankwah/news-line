@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { Logo } from "@/components/Logo";
 
 /**
  * Page chrome: a sticky-footer shell with a branded header and footer. Widths
@@ -15,9 +16,10 @@ export function Layout({ children }: { children: ReactNode }) {
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <Link
             href="/"
-            className="text-lg font-bold tracking-tight text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+            className="rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+            aria-label="News Line home"
           >
-            News<span className="text-brand">Line</span>
+            <Logo />
           </Link>
           <span className="text-sm text-muted">Latest stories</span>
         </div>
