@@ -21,9 +21,9 @@ export default async function HomePage() {
   return (
     <Layout>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">Latest articles</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">Latest stories</h1>
         <p className="mt-2 text-muted">
-          A live feed served by a custom Drupal REST resource.
+          Reporting and features from the News Line desk.
         </p>
       </div>
 
