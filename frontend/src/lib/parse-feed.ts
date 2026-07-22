@@ -1,5 +1,6 @@
 import type {
   Article,
+  ArticleDetail,
   AuthorRef,
   FeedLinks,
   FeedMeta,
@@ -148,4 +149,18 @@ export function normalizeFeedResponse(raw: unknown): FeedResponse {
     meta: parseMeta(root.meta, data.length),
     links: parseLinks(root.links),
   };
+}
+
+/**
+ * Coerces an unknown value into an ArticleDetail, or null if it is not a valid
+ * article. Reuses article validation and adds the body HTML string.
+ */
+export function normalizeArticleDetail(raw: unknown): ArticleDetail | null {
+  const article = parseArticle(raw);
+  if (article === null) {
+    return null;
+  }
+  const body = isRecord(raw) && typeof raw.body === "string" ? raw.body : "";
+
+  return { ...article, body };
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { normalizeFeedResponse } from "@/lib/parse-feed";
+import { normalizeArticleDetail, normalizeFeedResponse } from "@/lib/parse-feed";
 
 describe("normalizeFeedResponse", () => {
   it("parses a well-formed payload", () => {
@@ -107,5 +107,29 @@ describe("normalizeFeedResponse", () => {
 
     expect(result.data[0].tags).toHaveLength(1);
     expect(result.data[0].tags[0].name).toBe("Valid");
+  });
+});
+
+describe("normalizeArticleDetail", () => {
+  it("returns an article with its body", () => {
+    const detail = normalizeArticleDetail({
+      id: "uuid-1",
+      title: "Full",
+      body: "<p>Body HTML</p>",
+    });
+
+    expect(detail).not.toBeNull();
+    expect(detail?.title).toBe("Full");
+    expect(detail?.body).toBe("<p>Body HTML</p>");
+  });
+
+  it("defaults a missing body to an empty string", () => {
+    const detail = normalizeArticleDetail({ id: "uuid-2", title: "No body" });
+    expect(detail?.body).toBe("");
+  });
+
+  it("returns null for an unusable article", () => {
+    expect(normalizeArticleDetail({ id: "", title: "" })).toBeNull();
+    expect(normalizeArticleDetail(null)).toBeNull();
   });
 });

@@ -40,6 +40,11 @@ export interface Article {
   hero: HeroImage | null;
 }
 
+/** A single article including its rendered body HTML (detail endpoint). */
+export interface ArticleDetail extends Article {
+  body: string;
+}
+
 export interface FeedMeta {
   count: number;
   page: number;
