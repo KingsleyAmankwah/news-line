@@ -2,8 +2,8 @@ import "server-only";
 
 import { unstable_cache } from "next/cache";
 import { getAccessToken } from "@/lib/auth";
-import { normalizeFeedResponse } from "@/lib/parse-feed";
-import type { FeedQuery, FeedResponse } from "@/lib/types";
+import { normalizeArticleDetail, normalizeFeedResponse } from "@/lib/parse-feed";
+import type { ArticleDetail, FeedQuery, FeedResponse } from "@/lib/types";
 
 /**
  * Server-only client for the Drupal Article Feed API.
@@ -61,6 +61,39 @@ export async function getArticleFeed(query: FeedQuery = {}): Promise<FeedRespons
     () => fetchArticleFeed(query),
     ["article-feed", JSON.stringify(query)],
     { revalidate: revalidateSeconds(), tags: ["article-feed"] },
+  );
+
+  return load();
+}
+
+async function fetchArticle(slug: string): Promise<ArticleDetail | null> {
+  const token = await getAccessToken();
+  const response = await fetch(
+    `${drupalBaseUrl()}/api/article/${encodeURIComponent(slug)}?_format=json`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+      cache: "no-store",
+    },
+  );
+
+  if (response.status === 404) {
+    return null;
+  }
+  if (!response.ok) {
+    throw new Error(`Article request failed with status ${response.status}.`);
+  }
+
+  return normalizeArticleDetail(await response.json());
+}
+
+export async function getArticle(slug: string): Promise<ArticleDetail | null> {
+  const load = unstable_cache(
+    () => fetchArticle(slug),
+    ["article", slug],
+    { revalidate: revalidateSeconds(), tags: ["article-feed", `article:${slug}`] },
   );
 
   return load();
