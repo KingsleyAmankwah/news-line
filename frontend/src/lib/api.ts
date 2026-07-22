@@ -95,6 +95,12 @@ async function fetchArticleFeed(query: FeedQuery): Promise<FeedResponse> {
   return { ...feed, data: feed.data.map(withBackendHero) };
 }
 
+const EMPTY_FEED: FeedResponse = {
+  data: [],
+  meta: { count: 0, page: 0, itemsPerPage: 0, totalPages: 0 },
+  links: { self: "", next: null, prev: null },
+};
+
 export async function getArticleFeed(query: FeedQuery = {}): Promise<FeedResponse> {
   const load = unstable_cache(
     () => fetchArticleFeed(query),
@@ -102,7 +108,15 @@ export async function getArticleFeed(query: FeedQuery = {}): Promise<FeedRespons
     { revalidate: revalidateSeconds(), tags: ["article-feed"] },
   );
 
-  return load();
+  try {
+    return await load();
+  } catch (error) {
+    // The backend may be briefly unreachable (e.g. a demo tunnel is down).
+    // Degrade to an empty feed so a build/prerender never hard-fails; the next
+    // revalidation refetches once the backend is back.
+    console.error("Article feed unavailable:", error);
+    return EMPTY_FEED;
+  }
 }
 
 async function fetchArticle(slug: string): Promise<ArticleDetail | null> {
