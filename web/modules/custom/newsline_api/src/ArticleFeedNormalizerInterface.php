@@ -27,4 +27,20 @@ interface ArticleFeedNormalizerInterface {
    */
   public function normalize(NodeInterface $node, RefinableCacheableDependencyInterface $cacheability): array;
 
+  /**
+   * Normalizes an article for a single-article (detail) response.
+   *
+   * Returns the same shape as normalize() plus the rendered body HTML, which
+   * the feed deliberately omits.
+   *
+   * @param \Drupal\node\NodeInterface $node
+   *   The article node to normalize.
+   * @param \Drupal\Core\Cache\RefinableCacheableDependencyInterface $cacheability
+   *   Collects cache metadata for the entities and configuration read.
+   *
+   * @return array
+   *   The normalized article including a "body" HTML string.
+   */
+  public function normalizeDetail(NodeInterface $node, RefinableCacheableDependencyInterface $cacheability): array;
+
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drupal\newsline_api;
 
+use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Cache\RefinableCacheableDependencyInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
@@ -11,6 +12,7 @@ use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\EntityReferenceFieldItemListInterface;
 use Drupal\Core\File\FileUrlGeneratorInterface;
+use Drupal\Core\Render\RendererInterface;
 use Drupal\file\FileInterface;
 use Drupal\image\ImageStyleInterface;
 use Drupal\media\MediaInterface;
@@ -37,6 +39,7 @@ final class ArticleFeedNormalizer implements ArticleFeedNormalizerInterface {
     protected readonly Slugifier $slugifier,
     protected readonly ReadingTimeCalculator $readingTimeCalculator,
     protected readonly ConfigFactoryInterface $configFactory,
+    protected readonly RendererInterface $renderer,
     protected readonly LoggerInterface $logger,
   ) {}
 
@@ -67,6 +70,44 @@ final class ArticleFeedNormalizer implements ArticleFeedNormalizerInterface {
       'tags' => $this->normalizeTags($node, $cacheability),
       'hero' => $this->normalizeHero($node, $cacheability, $settings),
     ];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function normalizeDetail(NodeInterface $node, RefinableCacheableDependencyInterface $cacheability): array {
+    $data = $this->normalize($node, $cacheability);
+    $data['body'] = $this->renderBody($node, $cacheability);
+
+    return $data;
+  }
+
+  /**
+   * Returns the filtered body HTML, bubbling the text format's cache metadata.
+   */
+  private function renderBody(NodeInterface $node, RefinableCacheableDependencyInterface $cacheability): string {
+    if (!$node->hasField('body') || $node->get('body')->isEmpty()) {
+      return '';
+    }
+    $item = $node->get('body')->first();
+    if ($item === NULL) {
+      return '';
+    }
+    $value = $item->getValue();
+
+    // Rendering the body through a processed_text element runs the text format
+    // filter pipeline and bubbles its cache metadata (check_markup is
+    // deprecated precisely because it flattens that metadata away).
+    $build = [
+      '#type' => 'processed_text',
+      '#text' => (string) ($value['value'] ?? ''),
+      '#format' => isset($value['format']) && $value['format'] !== '' ? (string) $value['format'] : 'plain_text',
+      '#langcode' => $node->language()->getId(),
+    ];
+    $html = (string) $this->renderer->renderInIsolation($build);
+    $cacheability->addCacheableDependency(CacheableMetadata::createFromRenderArray($build));
+
+    return $html;
   }
 
   /**

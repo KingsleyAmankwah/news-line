@@ -92,6 +92,25 @@ final class ArticleFeedNormalizerTest extends ArticleFeedKernelTestBase {
   }
 
   /**
+   * Tests that the detail normalization adds the rendered body.
+   */
+  public function testNormalizeDetailIncludesRenderedBody(): void {
+    $article = $this->createArticle([
+      'title' => 'With body',
+      'body' => ['value' => 'Hello world body text.', 'format' => 'plain_text'],
+    ]);
+
+    $result = $this->normalizer->normalizeDetail($article, new CacheableMetadata());
+
+    // Retains the feed shape...
+    $this->assertSame('With body', $result['title']);
+    $this->assertArrayHasKey('summary', $result);
+    // ...and adds the rendered body.
+    $this->assertArrayHasKey('body', $result);
+    $this->assertStringContainsString('Hello world body text.', $result['body']);
+  }
+
+  /**
    * Tests that normalization collects cache metadata for its dependencies.
    */
   public function testNormalizeCollectsCacheMetadata(): void {

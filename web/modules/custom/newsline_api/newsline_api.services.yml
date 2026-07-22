@@ -22,4 +22,5 @@ services:
       - '@newsline_api.slugifier'
       - '@newsline_api.reading_time_calculator'
       - '@config.factory'
+      - '@renderer'
       - '@logger.channel.newsline_api'
