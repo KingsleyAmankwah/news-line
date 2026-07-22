@@ -1,0 +1,25 @@
+# Caddy terminates TLS (automatic Let's Encrypt for SITE_DOMAIN) and serves the
+# Drupal docroot, proxying PHP to the php-fpm container.
+#
+# SITE_DOMAIN can be a real domain, or an <ip>.nip.io host (free, no DNS) — both
+# get a valid certificate. For plain HTTP with no domain, change the site line
+# below to `http://{$SITE_DOMAIN} {` and set SITE_DOMAIN to the VM's IP.
+{$SITE_DOMAIN} {
+	root * /var/www/html/web
+	encode gzip zstd
+
+	# Drupal front controller + clean URLs.
+	php_fastcgi php:9000
+
+	file_server
+
+	# Basic hardening: block access to sensitive paths.
+	@sensitive path /sites/*/settings*.php /sites/*/files/private/* /.git/*
+	respond @sensitive 403
+
+	header {
+		X-Content-Type-Options nosniff
+		X-Frame-Options SAMEORIGIN
+		Referrer-Policy strict-origin-when-cross-origin
+	}
+}

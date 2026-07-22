@@ -1,0 +1,12 @@
+# The frontend deploys to Vercel, not into the Drupal image/context.
+frontend/
+# Local dev + VCS noise.
+.ddev/
+.git/
+.github/
+node_modules/
+# Secrets and generated content never belong in the build context.
+.env
+keys/
+web/sites/*/settings.php
+web/sites/*/files/
