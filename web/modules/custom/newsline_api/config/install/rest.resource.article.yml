@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - newsline_api
+    - serialization
+    - simple_oauth
+  enforced:
+    module:
+      - newsline_api
+id: article
+plugin_id: article
+granularity: resource
+configuration:
+  methods:
+    - GET
+  formats:
+    - json
+  authentication:
+    - oauth2
