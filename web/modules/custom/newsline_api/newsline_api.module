@@ -1,0 +1,43 @@
+<?php
+
+/**
+ * @file
+ * Hook implementations for the News Line API module.
+ */
+
+declare(strict_types=1);
+
+use Drupal\node\NodeInterface;
+
+/**
+ * Implements hook_node_insert().
+ */
+function newsline_api_node_insert(NodeInterface $node): void {
+  _newsline_api_notify_revalidation($node);
+}
+
+/**
+ * Implements hook_node_update().
+ */
+function newsline_api_node_update(NodeInterface $node): void {
+  _newsline_api_notify_revalidation($node);
+}
+
+/**
+ * Implements hook_node_delete().
+ */
+function newsline_api_node_delete(NodeInterface $node): void {
+  _newsline_api_notify_revalidation($node);
+}
+
+/**
+ * Notifies the frontend to revalidate when an article changes.
+ *
+ * @param \Drupal\node\NodeInterface $node
+ *   The node that was created, updated, or deleted.
+ */
+function _newsline_api_notify_revalidation(NodeInterface $node): void {
+  if ($node->bundle() === 'article') {
+    \Drupal::service('newsline_api.revalidation_notifier')->notify();
+  }
+}

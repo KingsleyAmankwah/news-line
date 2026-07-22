@@ -17,3 +17,9 @@ newsline_api.settings:
     thumbnail_image_style:
       type: string
       label: 'Machine name of the image style used for the thumbnail image'
+    revalidation_endpoint:
+      type: string
+      label: 'Frontend URL pinged to revalidate cached content when articles change'
+    revalidation_secret:
+      type: string
+      label: 'Shared secret sent with revalidation requests'

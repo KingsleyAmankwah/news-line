@@ -13,6 +13,13 @@ services:
     arguments:
       - '@transliteration'
 
+  newsline_api.revalidation_notifier:
+    class: Drupal\newsline_api\RevalidationNotifier
+    arguments:
+      - '@http_client'
+      - '@config.factory'
+      - '@logger.channel.newsline_api'
+
   newsline_api.article_feed_normalizer:
     class: Drupal\newsline_api\ArticleFeedNormalizer
     arguments:
