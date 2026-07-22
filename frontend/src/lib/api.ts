@@ -3,7 +3,7 @@ import "server-only";
 import { unstable_cache } from "next/cache";
 import { getAccessToken } from "@/lib/auth";
 import { normalizeArticleDetail, normalizeFeedResponse } from "@/lib/parse-feed";
-import type { ArticleDetail, FeedQuery, FeedResponse } from "@/lib/types";
+import type { ArticleDetail, FeedQuery, FeedResponse, HeroImage } from "@/lib/types";
 
 /**
  * Server-only client for the Drupal Article Feed API.
@@ -26,6 +26,44 @@ function drupalBaseUrl(): string {
 function revalidateSeconds(): number {
   const parsed = Number(process.env.FEED_REVALIDATE_SECONDS);
   return Number.isFinite(parsed) && parsed > 0 ? parsed : 60;
+}
+
+/**
+ * Forces an image URL onto the configured backend origin.
+ *
+ * Drupal emits image-style URLs whose host reflects however the request
+ * reached it (behind DDEV/a proxy that can be "localhost"), which is
+ * unreliable for a decoupled client. The frontend owns the public backend
+ * location, so it rewrites the origin — resolving relative paths and
+ * overriding any absolute host — keeping the path and the required itok query.
+ */
+function toBackendUrl(rawUrl: string | null): string | null {
+  if (!rawUrl) {
+    return rawUrl;
+  }
+  try {
+    const base = new URL(drupalBaseUrl());
+    const resolved = new URL(rawUrl, base);
+    resolved.protocol = base.protocol;
+    resolved.host = base.host;
+    return resolved.toString();
+  } catch {
+    return rawUrl;
+  }
+}
+
+function withBackendHero<T extends { hero: HeroImage | null }>(article: T): T {
+  if (!article.hero) {
+    return article;
+  }
+  return {
+    ...article,
+    hero: {
+      ...article.hero,
+      src: toBackendUrl(article.hero.src) ?? article.hero.src,
+      thumbnail: toBackendUrl(article.hero.thumbnail),
+    },
+  };
 }
 
 async function fetchArticleFeed(query: FeedQuery): Promise<FeedResponse> {
@@ -53,7 +91,8 @@ async function fetchArticleFeed(query: FeedQuery): Promise<FeedResponse> {
     throw new Error(`Article feed request failed with status ${response.status}.`);
   }
 
-  return normalizeFeedResponse(await response.json());
+  const feed = normalizeFeedResponse(await response.json());
+  return { ...feed, data: feed.data.map(withBackendHero) };
 }
 
 export async function getArticleFeed(query: FeedQuery = {}): Promise<FeedResponse> {
@@ -86,7 +125,8 @@ async function fetchArticle(slug: string): Promise<ArticleDetail | null> {
     throw new Error(`Article request failed with status ${response.status}.`);
   }
 
-  return normalizeArticleDetail(await response.json());
+  const article = normalizeArticleDetail(await response.json());
+  return article ? withBackendHero(article) : null;
 }
 
 export async function getArticle(slug: string): Promise<ArticleDetail | null> {
