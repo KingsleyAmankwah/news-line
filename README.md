@@ -43,7 +43,7 @@ React patterns and a token-driven design system that round-trips to Figma.
   with light/dark theming and RTL-safe logical utilities.
 - A matching **Figma design system generated from the code** — variables
   (scoped, with `var(--…)` code syntax), a `Button` variant set, and a `Card` —
-  demonstrating the code↔design round-trip: **[Figma file](https://www.figma.com/design/LgbjCqTF5bneG1lYqWMaPq)**.
+  demonstrating the code↔design round-trip: **[Figma file](https://www.figma.com/design/LgbjCqTF5bneG1lYqWMaPq)**
 
 **Testing**
 
